@@ -27,3 +27,16 @@ resource "aws_subnet" "external" {
     name = "vpc"
     }
 }
+
+
+//  vpc_id        = var.is_govcloud ? data.aws_vpc.gov_dev_vpc[0].id : data.terraform_remote_state.vpc[0].outputs.vpc_id
+data "terraform_remote_state" "vpc" {
+  count   = !var.is_govcloud ? 1 : 0
+  backend = "s3"
+
+  config = {
+    bucket = var.bucket
+    key    = var.key
+    region = var.region
+  }
+}
